@@ -69,4 +69,17 @@ router.get(
     }
 );
 
+router.get(
+    '/posts/delete/:id',
+    async (req, res) => {
+        try {
+            await Post.remove({ _id: req.params.id });
+
+            return res.json({message: 'Post has been removed!'});
+        } catch (e) {
+            return handlePageError(res, e);
+        }
+    }
+);
+
 export default router;

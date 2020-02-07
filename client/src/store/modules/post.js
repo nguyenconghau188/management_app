@@ -1,4 +1,5 @@
-import Http from '../../common/Http';
+// import Http from '../../common/Http';
+import Axios from 'axios';
 
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
@@ -15,14 +16,14 @@ const getters = {
 
 const actions = {
   getPosts(context) {
-    Http.get('/posts')
+    Axios.get('/posts')
       .then((res) => {
         context.commit('setPosts', res.data.docs);
       });
   },
   createPost(context, obj) {
     return new Promise((res) => {
-      Http.post('/posts', obj)
+      Axios.post('/posts', obj)
         .then((response) => {
           res(response);
         });
@@ -31,7 +32,7 @@ const actions = {
   updatePost(context, obj) {
     /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
     return new Promise((res) => {
-      Http.put(`/posts/${obj.id}`, obj.post)
+      Axios.put(`/posts/${obj.id}`, obj.post)
         .then((response) => {
           res(response);
         });
@@ -39,9 +40,19 @@ const actions = {
   },
   getPost(context, id) {
     return new Promise((res) => {
-      Http.get(`/posts/${id}`)
+      Axios.get(`/posts/${id}`)
         .then((response) => {
           // console.error(response);
+          res(response);
+        });
+    });
+  },
+  deletePost(context, id) {
+    /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+    // console.error(id);
+    return new Promise((res) => {
+      Axios.get(`/posts/delete/${id}`)
+        .then((response) => {
           res(response);
         });
     });

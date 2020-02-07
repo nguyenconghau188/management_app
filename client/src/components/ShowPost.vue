@@ -17,14 +17,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(post, index) in posts" :key="index">
+          <tr v-for="(post, index) in posts" :key="post._id">
             <td>{{ index+1 }}</td>
             <td>{{ post.title }}</td>
             <td>{{ post.category }}</td>
             <td>{{ post.content }}</td>
             <td>
               <router-link :to="{ name: 'edit', params: {id: post._id} }" class="btn btn-sm btn-success col-md-offset-1 col-md-5">Edit</router-link>
-              <a href="#" class="btn btn-sm btn-warning col-md-offset-1 col-md-5">Delete</a>
+              <a href="javascript:;" @click="deletePost(post._id)" class="btn btn-sm btn-warning col-md-offset-1 col-md-5">Delete</a>
             </td>
           </tr>
         </tbody>
@@ -38,6 +38,11 @@ export default {
   name: 'ShowPost',
   props: {
     posts: Array,
+  },
+  methods: {
+    deletePost(id) {
+      this.$emit('deletePost', id);
+    },
   },
 };
 </script>
