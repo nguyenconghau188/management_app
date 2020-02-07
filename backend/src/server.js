@@ -1,7 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import routes from './routes';
+import routes from './routers/routes';
+import userRoutes from './routers/user'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -11,7 +12,7 @@ const app = express();
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(cors());
-app.use(routes);
+app.use(userRoutes);
 
 //connect to mongodb
 mongoose.connect(

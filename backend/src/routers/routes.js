@@ -1,6 +1,6 @@
 import _assign from "lodash/assign";
 import { Router } from "express";
-import Post from './models/post';
+import Post from '../models/post';
 import 'babel-polyfill';
 
 const router = Router();
