@@ -1,15 +1,16 @@
 import { Router } from 'express';
 import User from '../models/user';
+import auth from '../middleware/auth';
 
 const router = Router();
 
-router.post('/users/create', async (req, res) => {
+router.post('/users/create', auth, async (req, res) => {
     //create new user
     try {
         const user = new User(req.body);
         await user.save();
         const token = await user.generateAuthToken();
-        console.log(token)
+
         res.status(201).send({ user, token });
     } catch (e) {
         res.status(400).send(e);
@@ -26,10 +27,32 @@ router.post('/users/login', async (req, res) => {
         }
         const token = await user.generateAuthToken();
 
-        res.status(200).send({ user, token });
+        res.send({ user, token });
     } catch (e) {
         res.status(400).send(e);
     }
 });
+
+router.get('/users', auth, async (req, res) => {
+    try {
+        const users = await User.find({});
+  
+        res.send({users});
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
+
+router.post('/users/logoutall', auth, async(req, res) => {
+    // Log user out of all devices
+    try {
+        console.log(req.user.obj);
+        req.user.tokens.splice(0, req.user.tokens.length)
+        await req.user.save()
+        res.send();
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 
 export default router;
