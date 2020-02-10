@@ -1,6 +1,7 @@
 import _assign from "lodash/assign";
 import { Router } from "express";
 import Post from '../models/post';
+import auth from '../middleware/auth';
 import 'babel-polyfill';
 
 const router = Router();
@@ -10,6 +11,7 @@ const handlePageError = (res, e) => res.setStatus(500).send(e.message);
 //create document
 router.post(
     '/posts',
+    auth,
     async (req, res) => {
         try {
             const post = await new Post(req.body).save();
@@ -26,6 +28,7 @@ router.post(
 
 router.put(
     '/posts/:id',
+    auth,
     async (req, res) => {
         try {
             await Post.findByIdAndUpdate(req.params.id, req.body);
@@ -39,6 +42,7 @@ router.put(
 
 router.get(
     '/posts/:id',
+    auth,
     async (req, res) => {
         try {
             const post = await Post.findById(req.params.id);
@@ -52,6 +56,7 @@ router.get(
 
 router.get(
     '/posts',
+    auth,
     async (req, res) => {
         try {
             const options = {
@@ -71,6 +76,7 @@ router.get(
 
 router.get(
     '/posts/delete/:id',
+    auth,
     async (req, res) => {
         try {
             await Post.remove({ _id: req.params.id });

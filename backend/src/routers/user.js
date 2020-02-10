@@ -4,7 +4,7 @@ import auth from '../middleware/auth';
 
 const router = Router();
 
-router.post('/users/create', auth, async (req, res) => {
+router.post('/users/create', async (req, res) => {
     //create new user
     try {
         const user = new User(req.body);
@@ -46,13 +46,27 @@ router.get('/users', auth, async (req, res) => {
 router.post('/users/logoutall', auth, async(req, res) => {
     // Log user out of all devices
     try {
-        console.log(req.user.obj);
         req.user.tokens.splice(0, req.user.tokens.length)
         await req.user.save()
+
         res.send();
     } catch (error) {
         res.status(500).send(error)
     }
-})
+});
+
+router.post('/users/logout', auth, async(req, res) => {
+    // Log user out
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token != req.token;
+        })
+        await req.user.save()
+        
+        res.send();
+    } catch (error) {
+        res.status(500).send(error)
+    }
+});
 
 export default router;
