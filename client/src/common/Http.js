@@ -1,24 +1,33 @@
 import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import config from '../config/config';
 
 const Http = {
   init() {
     Vue.use(VueAxios, axios);
-    Vue.axios.defaults.baseURL = 'http://localhost:3000';
+    Vue.axios.defaults.baseURL = config.apiUrl;
   },
-  get(url) {
+  get(url, headers) {
     return Vue.axios
-      .get(`${url}`)
+      .get(`${url}`, { headers })
       .catch((error) => {
         throw new Error(`[Error] Http ${error}`);
       });
   },
-  post(resource, params) {
-    return Vue.axios.post(`${resource}`, params);
+  post(resource, params, headers = null) {
+    return Vue.axios
+      .post(`${resource}`, params, { headers })
+      .catch((error) => {
+        throw new Error(`[Error] Http ${error}`);
+      });
   },
-  put(resource, params) {
-    return Vue.axios.put(`${resource}`, params);
+  put(resource, params, headers = null) {
+    return Vue.axios
+      .put(`${resource}`, params, { headers })
+      .catch((error) => {
+        throw new Error(`[Error] Http ${error}`);
+      });
   },
 };
 
