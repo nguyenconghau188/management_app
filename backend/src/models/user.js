@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import 'babel-polyfill';
 
 mongoose.set('useCreateIndex', true);
 const Schema = mongoose.Schema;
@@ -33,7 +34,8 @@ const UserSchema = new Schema({
             required: true,
         }
     }],
-}, {
+}, 
+{
     timestamps: {
         createdAt: 'created_at',
         updatedAt: 'updated_at',
@@ -46,6 +48,7 @@ UserSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8);
     }
+
     next();
 });
 
@@ -55,7 +58,7 @@ UserSchema.methods.generateAuthToken = async function () {
     const token = jwt.sign({_id: user._id}, process.env.JWT_KEY);
     user.tokens = user.tokens.concat({token});
     await user.save();
-    
+
     return token;
 }
 
@@ -72,6 +75,6 @@ UserSchema.statics.findByCredentials = async (email, password) => {
     return user;
 }
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('user', UserSchema);
 
 export default User;
