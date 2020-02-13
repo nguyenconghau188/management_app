@@ -4,11 +4,13 @@ const state = {
   users: [],
   user: {},
   token: '',
+  isLogin: 'false',
 }
 
 const getters = {
   getAllUsers: state => state.users,
   getUser: state => state.user,
+  getStateLogin: state => state.isLogin,
 }
 
 const actions = {
@@ -19,6 +21,7 @@ const actions = {
           if (res.user) {
             context.commit('setUser', JSON.parse(localStorage.getItem('user')));
             context.commit('setToken', localStorage.getItem('token'));
+            context.commit('setStateLogin', 'true');
           }
         },
         (error) => {
@@ -31,11 +34,12 @@ const actions = {
       );
   },
   logout(context, user, token) {
-    return userSevices.logout(user, token)
+    userSevices.logout(user, token)
       .then(
         (res) => {
           context.commit('setUser', {});
           context.commit('setToken', '');
+          context.commit('setStateLogin', 'false');
         },
         (error) => {
           this.$swal(
@@ -45,6 +49,20 @@ const actions = {
           );
         },
       );
+  },
+  getStateLogin(context) {
+    let isLogin = localStorage.getItem('isLogin');
+    if (isLogin === 'true') {
+      context.commit('setStateLogin', isLogin);
+    }
+  },
+  forceLogout(context) {
+    localStorage.setItem('user', '');
+    localStorage.setItem('token', '');
+    localStorage.setItem('isLogin', 'false');
+    context.commit('setUser', {});
+    context.commit('setToken', '');
+    context.commit('setStateLogin', 'false');
   },
 };
 
@@ -57,6 +75,9 @@ const mutations = {
   },
   setToken(state, token) {
     state.token = token;
+  },
+  setStateLogin(state, isLogin) {
+    state.isLogin = isLogin;
   },
 };
 

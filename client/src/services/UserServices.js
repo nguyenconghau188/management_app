@@ -2,26 +2,33 @@ import Http from '../common/Http';
 import AuthHeader from '../common/Auth-header';
 import config from '../config/config';
 
-export const userServices = {
-  login,
-  logout,
-  register,
-  getAll,
-  getById,
-  update,
-  delete: _delete,
-};
+function logout(user, token) {
+  const headers = AuthHeader();
+  const obj = {
+    user,
+    token,
+  };
+  const promise = new Promise(() => {
+    Http.post(config.apiLogout, obj, headers);
+  });
+  return promise
+    .then((res) => {
+      localStorage.setItem('user', '');
+      localStorage.setItem('token', '');
+      return res;
+    });
+}
 
 function handleResponse(response) {
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
     if (!response.ok) {
       if (response.status === 401) {
-        //auto logout if res return 401
-        let user = localStorage.getItem('user');
-        let token = localStorage.getItem('token');
+        // auto logout if res return 401
+        const user = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
         logout(user, token);
-        location.reload();
+        window.location.reload();
       }
       const error = (data && data.error) || response.statusText;
       return Promise.reject(error);
@@ -32,41 +39,27 @@ function handleResponse(response) {
 }
 
 function login(username, password) {
-  const headers = AuthHeader();
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+  };
   const obj = {
     username,
     password,
-  }
-  let promise = new Promise((res) => {
+  };
+  const promise = new Promise(() => {
     Http.post(config.apiLogin, obj, headers);
   });
   return promise
-          .then(handleResponse)
-          .then((res) => {
-            if (res.user) {
-              localStorage.setItem('user', JSON.stringify(res.user));
-              localStorage.setItem('token', res.token);
-            }
-            return res;
-          });
-}
-
-function logout(user, token) {
-  const headers = AuthHeader();
-  const obj = {
-    user,
-    token,
-  };
-  let promise = new Promise((res) => {
-    Http.post(config.apiLogout, obj, headers);
-  });
-  return promise
-          .then(handleResponse)
-          .then((res) => {
-            localStorage.setItem('user', '');
-            localStorage.setItem('token', '');
-            return res;
-          });
+    .then(handleResponse)
+    .then((res) => {
+      if (res.user) {
+        localStorage.setItem('user', JSON.stringify(res.user));
+        localStorage.setItem('token', res.token);
+      }
+      return res;
+    });
 }
 
 function register() {
@@ -78,13 +71,25 @@ function getAll() {
 }
 
 function getById(id) {
-  return 1;
+  return id;
 }
 
 function update(id, user) {
-  return 1;
+  return { id, user };
 }
 
-function _delete(id) {
-  return 1;
+function deleteUser(id) {
+  return id;
 }
+
+const userServices = {
+  login,
+  logout,
+  register,
+  getAll,
+  getById,
+  update,
+  deleteUser,
+};
+
+export default userServices;

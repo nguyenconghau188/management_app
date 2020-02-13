@@ -5,6 +5,7 @@ import config from '../config/config';
 
 const Http = {
   init() {
+    axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
     Vue.use(VueAxios, axios);
     Vue.axios.defaults.baseURL = config.apiUrl;
   },

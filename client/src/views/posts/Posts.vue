@@ -20,7 +20,6 @@ export default {
     ShowPost,
   },
   mounted() {
-    console.error('on mount');
     this.$store.dispatch('post/getPosts');
   },
   updated() {
