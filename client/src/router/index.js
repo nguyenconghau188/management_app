@@ -4,8 +4,8 @@ import Home from '../views/Home.vue';
 import Posts from '../views/posts/Posts.vue';
 import PostAction from '../views/posts/PostAction.vue';
 import About from '../views/About.vue';
-import Login from '../views/Login.vue';
-import Register from '../views/Register.vue';
+import Login from '../views/user/Login.vue';
+import Register from '../views/user/Register.vue';
 
 Vue.use(VueRouter);
 
@@ -57,16 +57,16 @@ const router = new VueRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ['/login', '/register'];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem('user');
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('user');
 
-//   if (authRequired && !loggedIn) {
-//     return next('/login');
-//   }
+  if (authRequired && !loggedIn) {
+    return next('/login');
+  }
 
-//   return next();
-// });
+  return next();
+});
 
 export default router;

@@ -30,7 +30,7 @@ export default {
       this.$store.dispatch('post/getPost', this.$route.params.id)
         .then(
           (res) => {
-            Object.assign(this.obj, res.data);
+            Object.assign(this.obj, res);
           },
         );
     }

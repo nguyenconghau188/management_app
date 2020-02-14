@@ -21,12 +21,14 @@ router.post('/users/login', async (req, res) => {
     //login user
     try {
         const { email, password } = req.body;
+        console.log(email);
+        console.log(password);
         const user = await User.findByCredentials(email, password);
         if (!user) {
             return res.status(401).send({error: 'Login fail!'});
         }
         const token = await user.generateAuthToken();
-
+        console.log(user);
         res.send({ user, token });
     } catch (e) {
         res.status(400).send(e);

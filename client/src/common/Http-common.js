@@ -1,25 +1,12 @@
 import config from '../config/config';
-
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 const http = {
-  handleResponse(response) {
-    console.error(response);
-    return response.text().then((text) => {
-      const data = text && JSON.parse(text);
-      if (!response.ok) {
-        const error = (data && data.message) || response.statusText;
-        return Promise.reject(error);
-      }
-      console.error(data);
-      return data;
-    });
-  },
   get(url, headers = {}) {
     const requestOptions = {
       method: 'GET',
       headers,
     };
     return fetch(`${config.apiUrl}${url}`, requestOptions)
-      .then(this.handleResponse)
       .catch((error) => {
         throw new Error(`[Error] Http ${error}`);
       });
@@ -31,7 +18,10 @@ const http = {
       body: JSON.stringify(obj),
     };
     return fetch(`${config.apiUrl}${url}`, requestOptions)
-      .then(this.handleResponse)
+      // .then((res) => {
+      //   console.error(res);
+      //   return res;
+      // })
       .catch((error) => {
         throw new Error(`[Error] Http ${error}`);
       });
@@ -43,7 +33,16 @@ const http = {
       body: JSON.stringify(obj),
     };
     return fetch(`${config.apiUrl}${url}`, requestOptions)
-      .then(this.handleResponse)
+      .catch((error) => {
+        throw new Error(`[Error] Http ${error}`);
+      });
+  },
+  delete(url, headers = {}) {
+    const requestOptions = {
+      method: 'DELETE',
+      headers,
+    };
+    return fetch(`${config.apiUrl}${url}`, requestOptions)
       .catch((error) => {
         throw new Error(`[Error] Http ${error}`);
       });

@@ -1,4 +1,4 @@
-import http from '../../common/Http-common';
+import postServices from '../../services/PostServices';
 
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
@@ -14,46 +14,22 @@ const getters = {
 
 const actions = {
   getPosts(context) {
-    http.get('/posts')
+    postServices.getPosts()
       .then((res) => {
         context.commit('setPosts', res.docs);
       });
   },
   createPost(context, obj) {
-    return new Promise((res) => {
-      http.post('/posts', obj)
-        .then((response) => {
-          res(response);
-        });
-    });
+    postServices.createPost(obj);
   },
   updatePost(context, obj) {
-    /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
-    return new Promise((res) => {
-      http.put(`/posts/${obj.id}`, obj.post)
-        .then((response) => {
-          res(response);
-        });
-    });
+    postServices.updatePost(obj);
   },
   getPost(context, id) {
-    return new Promise((res) => {
-      http.get(`/posts/${id}`)
-        .then((response) => {
-          // console.error(response);
-          res(response);
-        });
-    });
+    return postServices.getPost(id);
   },
   deletePost(context, id) {
-    /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
-    // console.error(id);
-    return new Promise((res) => {
-      http.get(`/posts/delete/${id}`)
-        .then((response) => {
-          res(response);
-        });
-    });
+    return postServices.deletePost(id);
   },
 };
 

@@ -22,9 +22,6 @@ export default {
   mounted() {
     this.$store.dispatch('post/getPosts');
   },
-  updated() {
-    console.error('on updated');
-  },
   computed: {
     ...mapGetters({
       posts: 'post/getAllPosts',
@@ -32,16 +29,6 @@ export default {
   },
   methods: {
     deletePost(id) {
-      /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
-      // console.error(id);
-      // $this.$store.dispatch('post/deletePost', id)
-      //   .then(() => {
-      //     this.$swal(
-      //       'Successfully!',
-      //       'Your post has been removed!',
-      //       'success',
-      //     );
-      //   });
       this.$swal({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",

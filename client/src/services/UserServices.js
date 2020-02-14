@@ -1,7 +1,8 @@
-import Http from '../common/Http';
+import Http from '../common/Http-common';
 import AuthHeader from '../common/Auth-header';
 import config from '../config/config';
 
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 function logout(user, token) {
   const headers = AuthHeader();
   const obj = {
@@ -33,33 +34,27 @@ function handleResponse(response) {
       const error = (data && data.error) || response.statusText;
       return Promise.reject(error);
     }
-
+    console.error(data);
     return data;
   });
 }
 
-function login(username, password) {
+function login(obj) {
   const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+    'Content-Type': 'application/json',
   };
-  const obj = {
-    username,
-    password,
-  };
-  const promise = new Promise(() => {
-    Http.post(config.apiLogin, obj, headers);
+  console.error(obj);
+  return new Promise((res) => {
+    Http.post(config.apiLogin, obj, headers)
+      .then(handleResponse)
+      .then((response) => {
+        if (response.user) {
+          localStorage.setItem('user', JSON.stringify(response.user));
+          localStorage.setItem('token', response.token);
+        }
+        res(response);
+      });
   });
-  return promise
-    .then(handleResponse)
-    .then((res) => {
-      if (res.user) {
-        localStorage.setItem('user', JSON.stringify(res.user));
-        localStorage.setItem('token', res.token);
-      }
-      return res;
-    });
 }
 
 function register() {

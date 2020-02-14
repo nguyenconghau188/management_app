@@ -11,8 +11,10 @@ const handlePageError = (res, e) => res.setStatus(500).send(e.message);
 //create document
 router.post(
     '/posts',
+    auth,
     async (req, res) => {
         try {
+            console.log(req.body);
             const post = await new Post(req.body).save();
 
             return res.send({
@@ -27,6 +29,7 @@ router.post(
 
 router.put(
     '/posts/:id',
+    auth,
     async (req, res) => {
         try {
             await Post.findByIdAndUpdate(req.params.id, req.body);
@@ -40,6 +43,7 @@ router.put(
 
 router.get(
     '/posts/:id',
+    auth,
     async (req, res) => {
         try {
             const post = await Post.findById(req.params.id);
@@ -53,6 +57,7 @@ router.get(
 
 router.get(
     '/posts',
+    auth,
     async (req, res) => {
         try {
             const options = {
@@ -70,11 +75,12 @@ router.get(
     }
 );
 
-router.get(
-    '/posts/delete/:id',
+router.delete(
+    '/posts/:id',
+    auth,
     async (req, res) => {
         try {
-            await Post.remove({ _id: req.params.id });
+            await Post.deleteOne({ _id: req.params.id });
 
             return res.json({message: 'Post has been removed!'});
         } catch (e) {
